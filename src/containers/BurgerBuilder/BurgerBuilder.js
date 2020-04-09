@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actions from '../../store/actions/';
 
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
@@ -15,16 +15,11 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 class BurgerBuilder extends Component {
   state = {
     purchasing: false,
-    loading: false,
-    error: false,
   }
 
   componentDidMount() {
-    // axios.get('ingredients.json').then(res => {
-    //   this.setState({ingredients: res.data})
-    // }).catch(err => {
-    //   this.setState({error: true});
-    // });
+    this.props.onInitIngredients();
+    this.props.onInitPriceList();
   }
 
   updatePurchaseState(ingredients) {
@@ -48,7 +43,7 @@ class BurgerBuilder extends Component {
   }
 
   purchaseCheckoutHandler = () => {
-
+    this.props.onInitPurchase();
     this.props.history.push('/checkout');
   }
 
@@ -61,13 +56,9 @@ class BurgerBuilder extends Component {
     }
     let orderSummary = null;
 
-    if (this.state.loading) {
-      orderSummary = <Spinner />
-    }
-
     let burger = <Spinner />;
 
-    if (this.state.error) {
+    if (this.props.error) {
       burger = <p>Ingredients can`t be loaded.</p>
     }
 
@@ -104,18 +95,21 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burger.ingredients,
+    price: state.burger.totalPrice,
+    error: state.burger.error,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdd: (ingredientName) => 
-      dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingredientName}),
+      dispatch(actions.addIngredient(ingredientName)),
     onIngredientRemove: (ingredientName) => 
-      dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingredientName}),
+      dispatch(actions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitPriceList: () => dispatch(actions.initPriceList()),
+    onInitPurchase: () => dispatch(actions.purchaseInit()),
   }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
