@@ -15,7 +15,7 @@ const toolbar = props => {
         <Logo />
       </div>
       <nav className={classes.DesktopOnly}>
-        <NavigationItems></NavigationItems>
+        <NavigationItems isAuthenticated={props.isAuth}/>
       </nav>
 
     </header>
@@ -24,6 +24,7 @@ const toolbar = props => {
 
 toolbar.propTypes ={
   drawerToggled: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool,
 }
 
 export default toolbar;

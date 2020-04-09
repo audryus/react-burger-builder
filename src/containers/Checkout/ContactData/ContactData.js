@@ -107,8 +107,9 @@ class ContactData extends Component {
       ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
+      userID: this.props.userID,
     }
-    this.props.onOrderBurger(order);
+    this.props.onOrderBurger(order, this.props.token);
   }
 
   checkValidity(value, rules) {
@@ -122,7 +123,7 @@ class ContactData extends Component {
     if(rules.minLength) {
       isValid = value.length >=rules.minLength && isValid;
     }
-    if(rules.minLength) {
+    if(rules.maxLength) {
       isValid = value.length <=rules.maxLength && isValid;
     }
 
@@ -192,12 +193,14 @@ const mapStateToProps = (state) => {
     ings: state.burger.ingredients,
     price: state.burger.totalPrice,
     loading: state.order.loading,
+    token: state.auth.token,
+    userID: state.auth.userID,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onOrderBurger: (order) => dispatch(actions.purchaseBurger(order)),
+    onOrderBurger: (order, token) => dispatch(actions.purchaseBurger(order, token)),
   }
 }
 
