@@ -8,11 +8,11 @@ import * as actions from '../../store/actions/';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import {updateObject, checkValidity} from '../../shared/utility';
 
 class Auth extends Component {
   state = {
     isSignup: true,
-    isFormValid: false,
     controls: {
       email: {
         elementType: 'input',
@@ -50,40 +50,16 @@ class Auth extends Component {
     }
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
-    if (!rules) {
-      return isValid;
-    }
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-    if(rules.minLength) {
-      isValid = value.length >=rules.minLength && isValid;
-    }
-    if(rules.maxLength) {
-      isValid = value.length <=rules.maxLength && isValid;
-    }
-    return isValid;
-  }
   inputChangedHandler = (event, inputID) => {
-    const updatedOrderform = {
-      ...this.state.controls
-    }
-    const updatedFormElement = {
-      ...updatedOrderform[inputID]
-    }
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation)
-    updatedFormElement.touched = true;
-    updatedOrderform[inputID] = updatedFormElement;
+    const updatedControls = updateObject(this.state.controls, {
+      [inputID]: updateObject(this.state.controls[inputID], {
+        value: event.target.value,
+        valid: checkValidity(event.target.value, this.state.controls[inputID].validation),
+        touched: true,
+      })
+    });
 
-    let validForm = true;
-    for (let input in updatedOrderform) {
-      validForm = updatedOrderform[input].valid && validForm
-    }
-
-    this.setState({controls: updatedOrderform, isFormValid: validForm});
+    this.setState({controls: updatedControls });
   }
 
   submitHandler = (event) => {

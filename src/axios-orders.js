@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://react-complete-guide-57bf6.firebaseio.com/'
+  baseURL: process.env.REACT_APP_FIRE_BASE_DB
 });
 
 export default instance;
