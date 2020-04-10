@@ -1,5 +1,3 @@
-import axios from '../../axios-orders';
-
 import * as actionTypes from './actionTypes';
 
 export const addIngredient = (name) => {
@@ -10,35 +8,25 @@ export const removeIngredient = (name) => {
   return {type: actionTypes.REMOVE_INGREDIENT, ingredientName: name}
 }
 
-const setIngredients = (ingredients) => {
+export const setIngredients = (ingredients) => {
   return {type: actionTypes.SET_INGREDIENTS, ingredients: ingredients};
 }
-const fetchIngredientsFailed = () => {
+
+export const fetchIngredientsFailed = () => {
   return {type: actionTypes.FETCH_INGREDIENTS_FAILED};
 }
 export const initIngredients = () => {
-  return dispatch => {
-    axios.get('ingredients.json').then(res => {
-      dispatch(setIngredients(res.data))
-    }).catch(err => {
-      dispatch(fetchIngredientsFailed())
-    });
-  }
+  return { type: actionTypes.INIT_INGREDIENTS }
 }
 
-const setPriceList = (priceList) => {
+export const setPriceList = (priceList) => {
   return {type: actionTypes.SET_PRICE_LIST, priceList: priceList};
 }
-const fetchPriceListFailed = () => {
+
+export const fetchPriceListFailed = () => {
   return {type: actionTypes.FETCH_PRICE_LIST_FAILED}
 }
 
 export const initPriceList = () => {
-  return dispatch => {
-    axios.get('priceList.json').then(res => {
-      dispatch(setPriceList(res.data))
-    }).catch(err => {
-      dispatch(fetchPriceListFailed())
-    });
-  }
+  return { type: actionTypes.INIT_PRICE_LIST}
 }
